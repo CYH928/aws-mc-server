@@ -1,0 +1,13 @@
+# Copy this file to terraform.tfvars and fill in your values
+# cp terraform.tfvars.example terraform.tfvars
+
+aws_region        = "ap-east-1"          # Hong Kong
+key_pair_name     = "my-key-pair"        # AWS EC2 Key Pair name
+duckdns_token     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+duckdns_subdomain = "mymc"               # -> mymc.duckdns.org
+admin_cidr        = "1.2.3.4/32"        # Your IP only (safer)
+backup_bucket_name = "mymc-backups-2024" # Must be globally unique
+mc_version        = "1.21.4"
+rcon_password     = "change-this-strong-password"
+alert_email       = "you@email.com"
+billing_threshold_usd = 50
