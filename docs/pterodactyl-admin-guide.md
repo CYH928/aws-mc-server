@@ -6,11 +6,11 @@
 
 ## 登入 Panel
 
-- 網址：`http://<MC伺服器公開IP>:8080`
+- **最簡單方法：** 去 MC Web Control Panel（`http://it114115.duckdns.org:8080?token=koei2026`），按 **"Open Pterodactyl Panel"** 按鈕。呢個連結會自動帶正確嘅 IP，唔需要自己查。
 - 帳號：`alexchang2828@gmail.com`
 - 注意：MC 伺服器熄咗嘅時候 Panel 無法存取（因為 Panel 裝喺 MC 機上）
 
-> MC 伺服器嘅公開 IP 每次開機都會變。可以用 `terraform output` 或者去 AWS Console → EC2 查看。
+> MC 伺服器嘅公開 IP 每次開機都會變，但 `fix-panel-ip.service` 會自動修正 Panel 設定。你唔需要手動改任何 IP — 直接用 Web Control Panel 嘅按鈕就可以。
 
 ---
 

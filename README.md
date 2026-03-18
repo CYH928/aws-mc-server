@@ -153,8 +153,10 @@ This generates a 6000×6000 block area. Takes 20–40 minutes. Players can be on
 
 ## Day-to-Day Operations
 
-| Task | Command (run on MC server via SSH) |
+| Task | How |
 |---|---|
+| **MC Web Control Panel** | `http://it114115.duckdns.org:8080?token=koei2026` — **always online** (runs on Watcher). Start/Stop EC2, show status & players, link to Pterodactyl Panel. |
+| Pterodactyl Panel | Click "Open Pterodactyl Panel" in Web Control Panel (IP changes on every boot, the link always has the correct IP). Only accessible when MC server is running. |
 | Check server status | `bash mc_status.sh` (copy from `scripts/`) |
 | Send server command | `mcrcon -H localhost -P 25575 -p PASSWORD "list"` |
 | Manual backup | `sudo bash /usr/local/bin/mc-backup.sh` |

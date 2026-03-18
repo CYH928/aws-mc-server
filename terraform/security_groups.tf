@@ -19,6 +19,15 @@ resource "aws_security_group" "watcher" {
     cidr_blocks = [var.admin_cidr]
   }
 
+  # Web control panel for admin
+  ingress {
+    description = "MC Web Control Panel"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = [var.admin_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

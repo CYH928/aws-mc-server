@@ -173,6 +173,57 @@ sudo bash mc_update_paper.sh
 
 ---
 
+## mc_web_panel.py (Auto — Watcher machine)
+
+**Location:** `scripts/mc_web_panel.py` (source), deployed to `/opt/mc-web-panel/app.py`
+**Runs on:** t4g.nano Watcher, as `mc-web-panel.service` (always running)
+**Port:** 8080
+**URL:** `http://it114115.duckdns.org:8080?token=koei2026`
+**Purpose:** Web-based control panel for managing the MC server without SSH
+
+### What it does:
+
+1. **Start EC2** — boots the MC server EC2 instance via AWS API
+2. **Stop EC2** — graceful shutdown sequence: warns players (10 second countdown) → `save-all` → `stop` MC process → stop EC2 instance (~30 seconds total)
+3. **Show status** — displays whether the MC EC2 is running or stopped
+4. **Show players** — lists currently online players
+5. **Link to Pterodactyl Panel** — provides a direct link with the current public IP (since the IP changes on every boot)
+
+### Authentication:
+
+Access is protected by a `?token=` query parameter. The Watcher Security Group also restricts port 8080 to `admin_cidr` only.
+
+### Why on the Watcher:
+
+The Watcher is always on, so the Web Control Panel is always accessible — even when the MC server is stopped. This is the primary way to start the MC server without needing a player to connect or using the AWS Console.
+
+---
+
+## fix-panel-ip.sh (Auto — MC Server machine)
+
+**Location:** `/opt/fix-panel-ip.sh` on MC server
+**Runs on:** t3.xlarge MC Server, as `fix-panel-ip.service` on every boot
+**Purpose:** Automatically fix Pterodactyl Panel IP addresses after each EC2 stop/start cycle
+
+### Background:
+
+The MC server has no Elastic IP, so its public IP changes every time the EC2 instance stops and restarts. Pterodactyl Panel, Node FQDN, and Wings CORS settings all contain the public IP, so they break after every restart.
+
+### What it does on every boot:
+
+1. **Detects current public IP** from EC2 instance metadata
+2. **Updates Panel APP_URL** in `/var/www/pterodactyl/.env`
+3. **Updates Node FQDN** in the Pterodactyl database
+4. **Updates Wings CORS** `allowed_origins` in `/etc/pterodactyl/config.yml`
+5. **Restarts Panel and Wings services** to apply changes
+6. **Auto-starts all Pterodactyl servers** so the MC game server is ready without manual intervention
+
+### Why this matters:
+
+Without this service, an admin would need to SSH into the MC server and manually update three different configuration files every time the server restarts. This was previously documented as a known issue (see known-issues.md #5 and #7).
+
+---
+
 ## mc_status.sh (Manual — either machine)
 
 **Location:** `scripts/mc_status.sh`

@@ -18,6 +18,7 @@ Players
 ┌─────────────────────────────┐
 │  Watcher Machine            │  t4g.nano (~$3.4/mo) — ALWAYS ON
 │  - mc-proxy (Python proxy)  │
+│  - MC Web Control Panel     │  port 8080, always accessible
 │  - DuckDNS IP updater       │
 │  - IAM: can start MC EC2    │
 └──────────────┬──────────────┘
@@ -28,6 +29,7 @@ Players
 │  Minecraft Server           │  t3.xlarge — STARTS/STOPS ON DEMAND
 │  - PaperMC (game server)    │
 │  - Pterodactyl Panel + Wings│
+│  - fix-panel-ip.service     │  auto-fix IP on every boot
 │  - Auto-stop script (cron)  │
 │  - S3 backup script (cron)  │
 │  - IAM: can stop itself     │
@@ -96,5 +98,7 @@ The MC server is assigned a fixed private IP (`cidrhost(subnet_cidr, 100)` in Te
 | Dynamic DNS | DuckDNS | Free, reliable, simple API |
 | World pre-generation | Chunky plugin | Eliminates chunk-gen lag when players explore |
 | Admin panel | Pterodactyl | Industry standard for game server management |
+| Web control panel | MC Web Control Panel (Python) | Always-on web UI on Watcher for Start/Stop EC2, status, players, Pterodactyl link |
+| IP auto-fix | fix-panel-ip.service | Updates Panel APP_URL, Node FQDN, Wings CORS on every MC server boot |
 | Infrastructure | Terraform | Reproducible, AI-maintainable, version-controllable |
 | Region | ap-east-1 (HK) | Lowest latency for Hong Kong players |

@@ -29,9 +29,48 @@ ssh -i minecraft-key.pem ubuntu@<mc_server_public_ip>
 
 ---
 
+## MC Web Control Panel
+
+The easiest way to manage the MC server. Runs on the Watcher machine, so it is **always accessible** even when the MC server is stopped.
+
+**URL:** `http://it114115.duckdns.org:8080?token=koei2026`
+
+### Features:
+
+- **Start** — boots the MC server EC2 instance
+- **Stop** — graceful shutdown: warns players (10s countdown) → save-all → stop MC → stop EC2 (~30 seconds total)
+- **Status** — shows whether MC EC2 is running or stopped
+- **Players** — lists currently online players
+- **Open Pterodactyl Panel** — direct link with the correct current IP (since the IP changes on every boot)
+
+### Authentication:
+
+The `?token=koei2026` query parameter is required. Additionally, port 8080 on the Watcher Security Group is restricted to `admin_cidr`.
+
+### Monitoring:
+
+```bash
+# SSH into Watcher
+sudo systemctl status mc-web-panel
+sudo journalctl -u mc-web-panel -f
+```
+
+---
+
+## IP Auto-Fix on Boot
+
+The MC server runs `fix-panel-ip.service` on every boot, which automatically updates:
+- Panel `APP_URL` in `/var/www/pterodactyl/.env`
+- Node FQDN in the Pterodactyl database
+- Wings CORS `allowed_origins` in `/etc/pterodactyl/config.yml`
+
+It then restarts Panel/Wings services and auto-starts all Pterodactyl servers. This means after the MC EC2 boots, Pterodactyl Panel is fully functional with the correct IP — no manual intervention required.
+
+---
+
 ## Starting / Stopping the MC Server Manually
 
-The server auto-starts when a player connects and auto-stops after 15 min of inactivity. For manual control:
+The server auto-starts when a player connects and auto-stops after 15 min of inactivity. The **MC Web Control Panel** (above) is the recommended way for manual control. For CLI alternatives:
 
 **Start manually:**
 ```bash
@@ -241,9 +280,9 @@ If mc-proxy crashes, it restarts automatically (Restart=always in systemd).
 
 The Pterodactyl Panel provides a web UI for managing the Minecraft server. It runs on the MC server machine (port 8080) and is only accessible when the MC server EC2 is running.
 
-**Access:** `http://<mc_server_public_ip>:8080`
+**Access:** Use the **"Open Pterodactyl Panel"** button in the MC Web Control Panel — it always has the correct current IP.
 
-> The MC server's public IP changes every time it stops and starts. Get the current URL via `terraform output pterodactyl_panel_url` or from AWS Console.
+> The MC server's public IP changes every time it stops and starts. The `fix-panel-ip.service` on the MC server automatically updates Panel APP_URL, Node FQDN, and Wings CORS on every boot, so the Panel works correctly without manual IP fixes.
 
 ```bash
 # Check Panel services (on MC server)

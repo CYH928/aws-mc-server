@@ -167,6 +167,24 @@ You need to agree to the EULA in order to run the server. Go to eula.txt for mor
 
 ---
 
+## 9. MC 伺服器公開 IP 每次 stop/start 都會變
+
+**問題：** MC 伺服器冇 Elastic IP，每次 EC2 stop 再 start 之後公開 IP 都會變。Pterodactyl Panel 嘅 APP_URL、Node FQDN、Wings CORS 全部寫死咗舊 IP，導致 Panel 開唔到或者 WebSocket 連唔到。
+
+**之前嘅影響：** 每次 MC 伺服器重新開機後，管理員都要手動 SSH 入去更新三個地方嘅 IP（見問題 #5 同 #7）。
+
+**解決：** 喺 MC 伺服器安裝 `fix-panel-ip.service`（腳本位於 `/opt/fix-panel-ip.sh`），每次 EC2 開機時自動：
+1. 偵測當前公開 IP（從 EC2 instance metadata）
+2. 更新 Panel `APP_URL`（`/var/www/pterodactyl/.env`）
+3. 更新 Node FQDN（Pterodactyl database）
+4. 更新 Wings CORS `allowed_origins`（`/etc/pterodactyl/config.yml`）
+5. 重啟 Panel 同 Wings 服務
+6. 自動啟動所有 Pterodactyl 伺服器
+
+**結果：** MC 伺服器開機後 Pterodactyl Panel 即刻可用，唔需要任何手動修改。配合 Watcher 上嘅 MC Web Control Panel 使用，管理員可以直接點 "Open Pterodactyl Panel" 按鈕就得到正確 URL。
+
+---
+
 ## 總結：部署順序建議
 
 根據以上踩坑經驗，推薦嘅部署順序：
