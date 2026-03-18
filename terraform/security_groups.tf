@@ -60,6 +60,15 @@ resource "aws_security_group" "minecraft" {
     cidr_blocks = [var.admin_cidr]
   }
 
+  # Pterodactyl Wings API + WebSocket (browser connects directly)
+  ingress {
+    description = "Pterodactyl Wings API"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_blocks = [var.admin_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

@@ -138,6 +138,28 @@ If world is named differently, edit the `tar` command in `/usr/local/bin/mc-back
 ### Check if MC server is running
 Panel is only accessible when the MC EC2 is running. Start the server first.
 
+### WebSocket 連接失敗（紅色 banner: "trouble connecting to your server"）
+**原因：** 瀏覽器需要直接連線到 Wings（port 8443），被 CORS 擋住。
+
+**修復：**
+```bash
+# 編輯 Wings config
+sudo nano /etc/pterodactyl/config.yml
+
+# 確保最底有以下設定（將 IP 改為你嘅 MC server 公開 IP）：
+allowed_origins:
+  - "http://YOUR_MC_PUBLIC_IP:8080"
+allow_cors_private_network: true
+
+# 重啟 Wings
+sudo systemctl restart wings
+```
+
+同時確保 Security Group 開放咗 port 8443（TCP）。
+
+### Server 啟動後顯示 "EULA" 錯誤
+Minecraft 要求接受 EULA 先可以啟動。去 Panel → Files → 編輯 `eula.txt` → 改為 `eula=true` → Save → 再按 Start。
+
 ### Check Nginx
 ```bash
 sudo systemctl status nginx

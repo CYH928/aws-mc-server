@@ -126,6 +126,16 @@
 
 建立後會自動安裝。第一次啟動需要幾分鐘下載伺服器核心。
 
+### Step 6：接受 EULA（重要！）
+
+Server 建立後第一次啟動會失敗，因為 Minecraft 要求接受 EULA：
+
+1. 去 **Files** 分頁
+2. 搵到 `eula.txt`，點開
+3. 將內容改為 `eula=true`
+4. 按 **Save Content**
+5. 返去 **Console** → 按 **Start**
+
 ---
 
 ## 建立模組世界（Forge / Fabric）

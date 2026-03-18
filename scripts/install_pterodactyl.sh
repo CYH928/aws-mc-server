@@ -208,6 +208,8 @@ EOF
 
 systemctl enable wings
 # NOTE: Wings will not start until configured with Panel token (see steps below)
+# After Wings config is generated, fix CORS for websocket access:
+# This allows the browser to connect to Wings websocket from the Panel
 
 # ── Done ───────────────────────────────────────────────────────────────────
 echo ""
@@ -221,12 +223,19 @@ echo ""
 echo " NEXT STEPS to connect Wings:"
 echo " 1. Open Panel -> Admin -> Nodes -> Create Node"
 echo "    - FQDN: ${PUBLIC_IP}"
-echo "    - Daemon Port: 8080 (or leave default 2022)"
+echo "    - Daemon Port: 8443"
 echo " 2. On the Node page, click 'Generate Token'"
 echo " 3. Copy the config and run:"
 echo "    sudo nano /etc/pterodactyl/config.yml   (paste config)"
+echo ""
+echo " 4. Fix CORS in Wings config (IMPORTANT):"
+echo "    Add these lines at the bottom of /etc/pterodactyl/config.yml:"
+echo "      allowed_origins:"
+echo "        - \"${APP_URL}\""
+echo "      allow_cors_private_network: true"
+echo ""
+echo " 5. Start Wings:"
 echo "    sudo systemctl start wings"
-echo " 4. Create a Server in Panel pointing to this Node"
-echo "    - Set Startup: java -Xmx12G -Xms4G -jar server.jar nogui"
-echo "    - Mount: ${MC_DIR}"
+echo ""
+echo " 6. Create a Server in Panel (remember to set eula=true in Files)"
 echo "======================================================"
